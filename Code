@@ -38,9 +38,15 @@ var TIME_DURATION = 'LAST_30_DAYS';
 // For ex. 10K products may take ~30 secs to run, 100K ~ 5 mins, while 500K could take 20+mins.
 var COUNT_LIMIT = '100000';
 
+//
+// Nazwy zakładek muszą być takie jak w pliku:
+// https://docs.google.com/spreadsheets/d/1VdzaWRbDF6YtJd-LSnPvObPzoiJsRE_4Hhwx6oJnpy8/edit?usp=sharing
+// Podstawowe nazwy arkuszy to: Data, ALL, Produkty RAMPED_UP
+//
+
 function main() {
   // Raportowanie: Filtr + nazwa pliku
-  getReport('metrics.clicks < 40', 'Report ALL');
+  //getReport('metrics.clicks < 40', 'Report ALL');
   //getReport('segments.product_custom_attribute' + CUSTOM_LABEL_NR + ' = "' + LABEL_RAMPED_UP + '" ', 'Report RAMPED_UP');
   //getReport('segments.product_custom_attribute' + CUSTOM_LABEL_NR + ' = "' + LABEL_LOW + '" ', 'Report LOW');
 
