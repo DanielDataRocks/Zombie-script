@@ -1,51 +1,56 @@
-// Define which custom label nr [0-4] will be used.
-// IMPORTANT: Ensure this label is free and only used for this solution.
-// This number should match the custom_label nr in the second column of the spreadsheet above.
+// Wersja zmodyfikowana
+// orginalna znajduje się tutaj:
+// https://github.com/google/low_volume_skus/blob/main/low_volume_skus.js
+
+// wybierz numer "custom label" [0-4] - powinna być całkowicie wolna, bo powodje nadpisanie wszystkich wartości
+// numer powinien być zgodny z plikeiem z Google spreadsheet - kolumna B1 = 'custom_label4'
 var CUSTOM_LABEL_NR = '4';
-// Create a new Google spreadsheet.
-// Add these values to A1 and B1 respectively:
-// A1 = 'id', B1 = 'custom_label4' - the nr of the custom label should match the above.
-// Name this working sheet 'LowVolume'.
-// Copy the link of the new sheet and paste it below.
+
+// Poniżej nalezy podać adres do pliku w Google spreadsheet
+// Nazwy zakładek muszą być takie jak w pliku:
+// https://docs.google.com/spreadsheets/d/1VdzaWRbDF6YtJd-LSnPvObPzoiJsRE_4Hhwx6oJnpy8/edit?usp=sharing
+// Podstawowe nazwy arkuszy to: Data, ALL, Produkty RAMPED_UP
+// Plik można skopiować i będzie działać :) 
 var SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/1dQa2TyWgXDFNBFo00abXCVdQdbsvisfL229kZykkEek/edit?usp=sharing';
+
+
 // Set the value for the label for newly flagged low volume products.
+// etykieta dla produktów Zombie - można zmienić sobie nazwę.
 var LABEL_LOW = 'low_clicks_last_30d';
 // Set the value for the label for low volume products that have ramped up.
+// etykieta dla produktów Zombie Reborn - można zmienić sobie nazwę.
 var LABEL_RAMPED_UP = 'product_ramped_up';
-// Set the nr. of clicks with which should be considered ramped_up.
-// It needs to be a string to be added as part of the query statement.
+
+
+// ilość kliknięć od której produkty są Zoombie lub Zombie reborn
 var THRESHOLD = '30';
-// The following filter will detect low volume products, using the threshold above.
-// You can add other metrics to filter on, for ex. adding AND metrics.impressions < 100.
-// Optionally you can filter on a merchant, e.g. adding AND MerchantId = 1234.
+
+// WAŻNE:
+// fitr uznający produkty za Zoombie
 var FILTER_ALL = 'metrics.clicks < ' + THRESHOLD + ' AND metrics.impressions < 300 AND metrics.conversions = 0' ;
-// The following filter will identify products that have already ramped up.
-// As a condition, it must have the previously added label and for ex. clicks >50.
-// To add further conditions use the AND clause, e.g. AND Conversions > 10.
+
+// Tego nie zmieniamy
 var FILTER_RAMPED_UP = 'segments.product_custom_attribute' + CUSTOM_LABEL_NR + ' = "' + LABEL_LOW + '" ';
-// To filter campaign names, add for ex. AND campaign.name LIKE “%FR_FR%”.
-// Set the filter to true to include it.
+
+// Jesli jest true to uruchomione jest filtrowanie danych na podstawie jednej kampanii
+// nazwę kampanii należy podać w "Twoja nazwa kampanii"
 var USE_CAMPAIGN_FILTER = true;
 var FILTER_CAMPAIGN_NAME = ' AND campaign.name LIKE "PLA Smart" ';
+
 // Enter time duration below. Possibilities:
 // TODAY | YESTERDAY | LAST_7_DAYS | LAST_WEEK | LAST_BUSINESS_WEEK |
 // THIS_MONTH | LAST_MONTH | LAST_14_DAYS | LAST_30_DAYS |
 // THIS_WEEK_SUN_TODAY | THIS_WEEK_MON_TODAY | LAST_WEEK_SUN_SAT Currently
 // default time duration is set to: LAST_30_DAYS
 var TIME_DURATION = 'LAST_30_DAYS';
-// This variable helps control data overflow in the target sheet.
-// Increasing this value may cause timeouts and sheet errors.
-// For ex. 10K products may take ~30 secs to run, 100K ~ 5 mins, while 500K could take 20+mins.
+
+// Ilość przetwarzanych produktów
 var COUNT_LIMIT = '100000';
 
-//
-// Nazwy zakładek muszą być takie jak w pliku:
-// https://docs.google.com/spreadsheets/d/1VdzaWRbDF6YtJd-LSnPvObPzoiJsRE_4Hhwx6oJnpy8/edit?usp=sharing
-// Podstawowe nazwy arkuszy to: Data, ALL, Produkty RAMPED_UP
-//
 
 function main() {
   // Raportowanie: Filtr + nazwa pliku
+  // do tego są potrzezbne zakłądki Report ALL, Report RAMPED_UP, Report LOW
   //getReport('metrics.clicks < 40', 'Report ALL');
   //getReport('segments.product_custom_attribute' + CUSTOM_LABEL_NR + ' = "' + LABEL_RAMPED_UP + '" ', 'Report RAMPED_UP');
   //getReport('segments.product_custom_attribute' + CUSTOM_LABEL_NR + ' = "' + LABEL_LOW + '" ', 'Report LOW');
@@ -101,8 +106,9 @@ function getFilteredShoppingProducts(filters, ReportName) {
 			count += 1;
 		} 
     // Label product as ramped up
+    // WAŻNE
+    // Warunek Zombie reborn
     if (label == LABEL_LOW && ( clicks > THRESHOLD || conversions > 0 ) ) {
-    //if ( clicks > THRESHOLD ) {
 			products.push([productId.toUpperCase(), LABEL_RAMPED_UP]);
 			count += 1;
 		}
