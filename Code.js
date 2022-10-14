@@ -1,6 +1,9 @@
 // Wersja zmodyfikowana
 // orginalna znajduje się tutaj:
 // https://github.com/google/low_volume_skus/blob/main/low_volume_skus.js
+// Instrukcja:
+// https://services.google.com/fh/files/events/_new_implementation_guide_low_volume_skus.pdf
+//
 
 // wybierz numer "custom label" [0-4] - powinna być całkowicie wolna, bo powodje nadpisanie wszystkich wartości
 // numer powinien być zgodny z plikeiem z Google spreadsheet - kolumna B1 = 'custom_label4'
