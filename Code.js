@@ -28,9 +28,11 @@ var LABEL_RAMPED_UP = 'product_ramped_up';
 // ilość kliknięć od której produkty są Zoombie lub Zombie reborn
 var THRESHOLD = '30';
 
+// LIMIT KONWERSJI, od którego produkt staje się bestsellerem
+var BESTSELLER_FLOOR = "50"
 // WAŻNE:
 // fitr uznający produkty za Zoombie
-var FILTER_ALL = 'metrics.clicks < ' + THRESHOLD + ' AND metrics.impressions < 300 AND metrics.conversions = 0' ;
+var FILTER_BESTSELLERS = `metrics.conversions < ${BESTSELLER_FLOOR}` ;
 
 // Tego nie zmieniamy
 var FILTER_RAMPED_UP = 'segments.product_custom_attribute' + CUSTOM_LABEL_NR + ' = "' + LABEL_LOW + '" ';
@@ -60,7 +62,7 @@ function main() {
 
   
   Logger.log('Wszystkich oznaczonych produktów LABEL_LOW z warunku FILTER_ALL');
-	var productsAll       = getFilteredShoppingProducts(FILTER_ALL, 'ALL');
+	var productsAll       = getFilteredShoppingProducts(FILTER_BESTSELLERS, 'ALL');
   Logger.log('Wszystkich oznaczonych produktów LABEL_RAMPED_UP z warunku FILTER_RAMPED_UP');
 	var productsRampedUp  = getFilteredShoppingProducts(FILTER_RAMPED_UP, 'Produkty RAMPED_UP');
 	var products = productsAll.concat(productsRampedUp);
@@ -80,7 +82,7 @@ function getFilteredShoppingProducts(filters, ReportName) {
 		'FROM shopping_performance_view WHERE ' + filters +
 		' AND segments.product_item_id != "undefined"' +
 		' AND segments.date DURING ' + TIME_DURATION +
-		' ORDER BY metrics.clicks DESC LIMIT ' + COUNT_LIMIT;
+		' ORDER BY metrics.conversions DESC LIMIT ' + COUNT_LIMIT;
 	var products = [];
 	var count = 0;
   var count_new = 0;
@@ -134,7 +136,7 @@ function getReport(filters, ReportName) {
 		'FROM shopping_performance_view WHERE ' + filters +
 		' AND segments.product_item_id != "undefined"' +
 		' AND segments.date DURING ' + TIME_DURATION +
-		' ORDER BY metrics.clicks DESC LIMIT ' + COUNT_LIMIT;
+		' ORDER BY metrics.conversions DESC LIMIT ' + COUNT_LIMIT;
 	var products = [];
 	var count = 0;
   var count_new = 0;
